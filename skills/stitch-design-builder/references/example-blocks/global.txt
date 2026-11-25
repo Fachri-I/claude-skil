@@ -1,0 +1,26 @@
+Design a responsive web interface (desktop 1440px, tablet 768px, mobile 375px) for "Ruang Tumbuh", a campus event platform: students browse and register for events, organizers publish events and screen registrants, admins verify organizers. All UI text is in Bahasa Indonesia. Treat this message as the permanent design system; every later screen must follow it exactly.
+Style: clean, warm, energetic but calm, lots of white space, rounded corners, cobalt blue for actions. Light mode only.
+
+COLORS (exact hex values, no others):
+- Brand: primary #2563EB (hover #1D4ED8), primary-soft #EFF6FF, link and active text #1D4ED8, text on primary #FFFFFF
+- Neutrals: canvas #F8FAFC, surface #FFFFFF, border #E2E8F0, input border #CBD5E1, text #0F172A, muted text #475569, subtle text #64748B (only on white or #F8FAFC)
+- Status (text / background / border): success #047857 / #ECFDF5 / #A7F3D0; warning #B45309 / #FFFBEB / #FDE68A; danger #B91C1C / #FEF2F2 / #FECACA (solid hover #991B1B); info #0369A1 / #F0F9FF / #BAE6FD
+- Event categories (label text / label bg / poster gradient from to): Seminar #1D4ED8 / #DBEAFE / #2563EB to #1E40AF; Workshop #7E22CE / #F3E8FF / #9333EA to #6B21A8; Kepanitiaan #C2410C / #FFEDD5 / #C2410C to #9A3412; Lainnya #334155 / #E2E8F0 / #475569 to #1E293B
+- Disabled controls: background #E2E8F0, text #64748B
+
+TYPOGRAPHY: Plus Jakarta Sans only. display 36/44 weight 800; h1 28/36 bold (mobile 24/32); h2 24/32 bold (mobile 20/28); h3 20/28 semibold; card title 16/24 semibold; body-lg 16/24; body 14/20; small 13/18; label 12/16 semibold; micro 11/14 semibold. Monospace only for ticket codes.
+
+SHAPE AND SPACING: radius 12px on buttons and inputs, 16px on cards and dialogs, full pills for badges, tabs and avatars. Card shadow 0 1px 3px rgba(15,23,42,.04), hover shadow 0 10px 15px -3px rgba(15,23,42,.06), dialog shadow 0 20px 25px -5px rgba(15,23,42,.10). 1px #E2E8F0 borders. 4px base spacing (4, 8, 12, 16, 24, 32, 48), max content width 1200px, page margin 16px mobile, 24px tablet, 32px desktop.
+
+NAVIGATION: header 64px. Desktop 1024px and up: 260px white sidebar with a right border #E2E8F0, active item background #EFF6FF with text #1D4ED8. Tablet: 80px icon rail. Mobile: 56px bottom tab bar with 2 to 5 items and 11px labels. Sidebar items: Mahasiswa = Pendaftaran Saya, Katalog, Profil. Penyelenggara = Dasbor, Acara Saya, Verifikasi, Profil. Admin = Analitik, Antrean Verifikasi, with a user block "Keluar" at the bottom and an info pill "Host admin" in the header. Public pages use a top header with the logo on the left and "Masuk" and "Daftar" on the right. Auth pages use a split layout: left brand panel (desktop only) in solid #2563EB with the white logo and a 36/44 weight 800 white headline; right form column max 420px on #F8FAFC.
+
+LOCKED ASSETS: Logo = 32px rounded tile #2563EB with a white bold "R", then the wordmark "Ruang Tumbuh" in bold #0F172A. Icons = Lucide outline style only, 1.5px stroke, rounded caps, 20px (16px inside badges); never filled, never emoji. Posters = 16:9 category gradient, no photos, no stock images, no illustrations. Avatars = initials in a circle, background #EFF6FF, text #1D4ED8. QR = static black-and-white grid placeholder. Empty state = 48px circle #EFF6FF with an icon, a title, one sentence and an optional button.
+
+COMPONENTS: Primary button #2563EB, white text, 44px high, 12px radius, semibold; secondary = white with 1px #CBD5E1 border; ghost = text #1D4ED8; danger = solid #B91C1C; danger-outline = white with #B91C1C text and border. One primary button per area. Input 44px high, label always above, error = #B91C1C border, icon and text below. Badge = pill, 12px semibold, always with text; status is never shown by color alone. Quota meter = progress bar plus text "72 / 100 terisi". Dialog max width 480px, scrim rgba(15,23,42,.5), "Kembali" on the left and the main action on the right. Toast = white, 1px border, icon plus text. Dropzone = 1px dashed #CBD5E1, 12px radius, fill #F8FAFC. Tables from 768px; below that each row becomes a card with a label per cell.
+
+STATUS LABELS (never show raw enum names): registrant = Menunggu (warning), Terdaftar or Diterima (success), Ditolak (danger), Dibatalkan (neutral); event = Draf (neutral), Dibuka (success), Kuota Penuh (warning), Pendaftaran Ditutup (warning), Selesai (neutral), Dibatalkan (danger); verification = Belum diajukan (neutral), Menunggu tinjauan (warning), Perlu dokumen tambahan (info), Ditolak (danger), Terverifikasi (success).
+
+DATA: every event time shows a zone, for example "Sabtu, 12 Des 2026, 09.00 WIB". Sample data is realistic but is example data only.
+
+AVOID: dark mode, gradients other than poster gradients, stock photos, emoji, glows, new accent hues, fictional statistics, partner logos, testimonials, pricing, claims. Never add content that a screen prompt does not list.
+Acknowledge in one line, then wait: I will request screens one by one.

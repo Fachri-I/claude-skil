@@ -1,0 +1,50 @@
+Tempel pada layar yang menyimpang. Semuanya aman dipakai berulang; ganti hanya bagian dalam kurung bila perlu.
+
+- [ ] **R1 Palet warna**
+```
+Keep everything else unchanged. Re-apply the exact palette: primary #2563EB (hover #1D4ED8), soft #EFF6FF, canvas #F8FAFC, surface #FFFFFF, border #E2E8F0, input border #CBD5E1, text #0F172A, muted #475569, subtle #64748B. Replace any other blue, gray, green, orange or red with the nearest token. {{GUARD}}
+```
+- [ ] **R2 Warna status**
+```
+Keep everything else unchanged. Make every status pill and alert use exactly: success #047857 on #ECFDF5 with border #A7F3D0; warning #B45309 on #FFFBEB with border #FDE68A; danger #B91C1C on #FEF2F2 with border #FECACA; info #0369A1 on #F0F9FF with border #BAE6FD. Each pill contains text. {{GUARD}}
+```
+- [ ] **R3 Tipografi**
+```
+Keep everything else unchanged. Use Plus Jakarta Sans everywhere with this scale: h1 28/36 bold, h2 24/32 bold, h3 20/28 semibold, card title 16/24 semibold, body 14/20, small 13/18, label 12/16 semibold. {{GUARD}}
+```
+- [ ] **R4 Bentuk dan tinggi kontrol**
+```
+Keep everything else unchanged. Buttons and inputs are 44px high with 12px radius; cards and dialogs have 16px radius; badges, tabs and avatars are fully rounded. Card shadow 0 1px 3px rgba(15,23,42,.04), 1px #E2E8F0 border. {{GUARD}}
+```
+- [ ] **R5 Ikon dan aset**
+```
+Keep everything else unchanged. Use only Lucide outline icons with a 1.5px stroke, 20px (16px inside badges); remove filled icons and emoji. Replace any photo or illustration with the category gradient (Seminar #2563EB to #1E40AF, Workshop #9333EA to #6B21A8, Kepanitiaan #C2410C to #9A3412, Lainnya #475569 to #1E293B). Logo stays a 32px #2563EB tile with a white "R" plus the wordmark "Ruang Tumbuh". {{GUARD}}
+```
+- [ ] **R6 Satu tombol primer per area**
+```
+Keep everything else unchanged. Ensure each card or area has at most one solid #2563EB button. Demote any extra primary button to secondary (white, 1px #CBD5E1 border). {{GUARD}}
+```
+- [ ] **R7 Tombol dinonaktifkan**
+```
+Keep everything else unchanged. Style every disabled control with background #E2E8F0 and text #64748B, no shadow, cursor not-allowed. {{GUARD}}
+```
+- [ ] **R8 Teks subtle**
+```
+Keep everything else unchanged. Make all metadata and placeholder text #64748B and never place it on a #E2E8F0 background; use #475569 there instead. {{GUARD}}
+```
+- [ ] **R9 Hapus konten tambahan**
+```
+Keep everything else unchanged. Remove any feature cards, statistics, partner logos, testimonials and claim badges that are not in the screen description; keep only the listed content. {{GUARD}}
+```
+- [ ] **R10 Label kuota dan zona waktu**
+```
+Keep everything else unchanged. Show quota as a progress bar with the text "72 / 100 terisi" next to it; when full use #B45309 for the bar and the text "Kuota penuh". Show every event time with its zone, for example "Sabtu, 12 Des 2026, 09.00 WIB". {{GUARD}}
+```
+- [ ] **R11 Cincin fokus**
+```
+Keep everything else unchanged. Show a visible focus ring on every interactive element: 2px #FFFFFF inner and 2px #2563EB outer. Touch targets are at least 44px. {{GUARD}}
+```
+- [ ] **R12 Varian mobile**
+```
+Keep everything else unchanged. Create the 375px variant: stack columns, tables become cards with a label per cell, the sidebar becomes a 56px bottom tab bar with 11px labels, primary buttons are full width 44px, page margin 16px. {{GUARD}}
+```
