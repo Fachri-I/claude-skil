@@ -1,0 +1,197 @@
+---
+name: "design-plan-builder"
+description: Membuat rancangan kerja pembangunan website (UI/UX, Frontend, Backend) dalam file .md plus mockup HTML statis, dari PRD, techstack, dan file pendukung, agar fitur, tampilan, API, dan database konsisten. Gunakan skill ini setiap kali user ingin membuat rancangan kerja, design plan, blueprint, atau rancangan teknis website/web app dari PRD, ingin menyelaraskan UI/UX dengan frontend dan backend, ingin membuat task.md atau security.md, atau menyebut PRD_nama-project.md dan techstack.md, walaupun user tidak menyebut kata "skill". Also use when the user asks for a UI/UX, frontend, and backend plan for a website from a PRD. Skill ini melanjutkan hasil skill PRD Builder.
+---
+
+# Design Plan Builder
+
+Skill ini mengubah PRD, techstack, dan file pendukung menjadi satu paket rancangan kerja yang konsisten dari fitur sampai tampilan, untuk tiga role: **UI/UX, Frontend, Backend**. Hasilnya berupa file `.md` dan mockup HTML statis.
+
+Konsistensi adalah tujuan utama. Semua keputusan penting (fitur, nama, warna, halaman, endpoint, tabel) ditulis **sekali** di Shared Contract, lalu dirujuk oleh ketiga role. Jangan menduplikasi atau menamai ulang hal yang sama di file lain.
+
+## Aturan umum
+
+- **Bahasa:** default Bahasa Indonesia untuk semua file hasil dan percakapan. Jika input user berbahasa Inggris, ikuti bahasa user. Istilah teknis, nama kode, route, dan field tetap dalam bahasa Inggris.
+- **Sesuaikan dengan techstack.** Semua kode, struktur folder, library, dan konvensi mengikuti `techstack.md`. Jangan memakai stack lain. Jika techstack tidak lengkap (misalnya belum ada ORM atau library UI), tanyakan dulu.
+- **Jangan mengarang.** Jika informasi di PRD tidak cukup untuk memutuskan sesuatu, tanyakan ke user atau tandai `[PERLU KONFIRMASI]`. Jangan diam-diam membuat asumsi besar.
+- **Kedalaman:** sampai detail teknis. Struktur folder, skema tabel, kontrak API lengkap, props komponen, contoh kode kunci, dan aturan keamanan.
+- **Tanya satu topik per giliran.** Jangan membanjiri user dengan pertanyaan. Kelompokkan maksimal 3 pertanyaan terkait.
+
+## Alur kerja
+
+Jalankan fase berurutan. Setelah tiap fase selesai, beri ringkasan singkat dan minta persetujuan user sebelum lanjut, kecuali user meminta langsung selesai.
+
+### Fase 0: Pengecekan input
+
+Minta user menyerahkan file perancangan. Periksa apa yang ada:
+
+| File | Status | Isi minimum yang dicari |
+|---|---|---|
+| `PRD_<project>.md` | Wajib | tujuan, target user, daftar fitur, alur utama, batasan |
+| `techstack.md` | Wajib | frontend, backend, database, auth, hosting, library UI |
+| File pendukung | Opsional | `user-flow.md`, skema DB awal, brand guideline, aturan bisnis, `task.md`/`security.md` yang sudah ada |
+
+Aturan:
+- Jika PRD atau techstack belum ada, hentikan dan beri tahu user. Sarankan membuatnya dengan skill PRD Builder.
+- Jika ada, baca semuanya, lalu laporkan: apa yang sudah cukup, apa yang kurang, dan apa yang belum bisa dirancang karena itu.
+- Jika `task.md` atau `security.md` sudah ada, gunakan sebagai dasar dan perbarui (lihat Fase 5), jangan menimpa.
+
+### Fase 1: Shared Contract
+
+Ekstrak dari input lalu susun kamus konsistensi. Simpan di bagian awal `DESIGN_PLAN_<project>.md`:
+
+1. **Daftar fitur dengan ID** (`F-01`, `F-02`, ...): nama, deskripsi singkat, prioritas (Must/Should/Could), role pengguna yang terlibat.
+2. **Glosarium & penamaan:** nama entitas, istilah bisnis, dan konvensi penamaan (file, komponen, route, tabel, field, endpoint). Satu istilah, satu nama.
+3. **Peta halaman:** ID halaman (`P-01`, ...), nama, route, fitur yang dilayani.
+4. **Design tokens:** diisi setelah Fase 2, lalu dikunci.
+5. **Kontrak API:** diisi di Fase 3.
+6. **Matriks keterlacakan:** diisi bertahap, diselesaikan di Fase 6.
+
+Minta persetujuan user atas daftar fitur dan peta halaman sebelum lanjut, karena semua fase berikutnya bergantung padanya.
+
+### Fase 2: UI/UX
+
+**Langkah wajib pertama: tanya referensi desain.** Tanyakan:
+
+> "Apakah Anda punya referensi desain (gambar, link, screenshot, brand guideline), atau pernah membuat desain dari PRD ini sebelumnya (misalnya dari Figma, mockup lama, atau hasil AI lain)?"
+
+- **Jika ada referensi:** analisis dulu (warna, tipografi, spacing, radius, gaya komponen, pola layout, nuansa). Jadikan sumber design tokens. Halaman yang tidak tercakup referensi **disesuaikan** dengan gaya yang sama, bukan didesain ulang dari nol. Catat di `UIUX_<project>.md` bagian "Sumber & adaptasi": mana yang berasal dari referensi dan mana yang diturunkan.
+- **Jika tidak ada:** rancang sendiri. Tanyakan dulu preferensi singkat bila belum ada di PRD (nuansa/brand, warna utama, mode gelap perlu atau tidak). Lalu pilih arah visual yang sesuai tujuan dan target user di PRD, dan jelaskan alasannya dalam satu-dua kalimat. Hindari tampilan generik; buat pilihan tipografi dan warna yang disengaja.
+
+Isi `UIUX_<project>.md`:
+
+1. Sumber & adaptasi desain
+2. Prinsip desain dan nuansa
+3. **Design tokens** (warna dengan nama semantik, tipografi, skala spacing, radius, shadow, breakpoint, mode terang/gelap bila perlu), ditulis sebagai tabel **dan** blok CSS variables
+4. Pola komponen (button, input, card, modal, tabel, navigasi, notifikasi) dengan varian dan state: default, hover, focus, disabled, loading, error
+5. **Per halaman (P-xx):** tujuan, fitur terkait (F-xx), struktur layout (wireframe teks), komponen yang dipakai, state (kosong, loading, error, sukses), perilaku responsif
+6. Alur pengguna (user flow) antar halaman
+7. Aksesibilitas: kontras, fokus keyboard, label, ukuran target sentuh
+8. Microcopy utama (judul, tombol, pesan error) bila relevan
+
+Setelah tokens disetujui, **kunci** tokens ke Shared Contract. Frontend wajib memakai nama token yang sama.
+
+**Mockup HTML statis** (wajib, lihat bagian "Aturan mockup").
+
+### Fase 3: Kontrak API
+
+Dari fitur (F-xx) dan halaman (P-xx), turunkan kontrak API. Untuk tiap endpoint tulis: method, path, deskripsi, auth/role yang boleh, parameter, body request, body response sukses (contoh JSON), daftar error (kode + pesan), dan fitur/halaman yang memakainya. Tetapkan format respons dan error yang seragam di seluruh API. Bila techstack bukan REST (GraphQL, tRPC, server actions), sesuaikan bentuk kontraknya.
+
+Kontrak ini disimpan di Shared Contract dan menjadi sumber tunggal bagi Frontend dan Backend.
+
+### Fase 4: Frontend dan Backend
+
+Kerjakan setelah UI/UX dan kontrak API terkunci. Keduanya mengacu pada Shared Contract.
+
+**`FRONTEND_<project>.md`** memuat:
+1. Ringkasan stack dan alasan pilihan library (sesuai techstack)
+2. Struktur folder lengkap
+3. Routing: tabel route ↔ halaman (P-xx) ↔ guard/akses
+4. Implementasi design tokens (file konfigurasi tema/CSS variables, nama sama dengan UI/UX)
+5. Daftar komponen: nama, props (tipe), state, event, dan halaman pemakainya; contoh kode untuk komponen kunci
+6. State management dan data fetching (cache, invalidasi, loading/error handling)
+7. Integrasi API: client, penanganan error, pemetaan endpoint ↔ komponen/halaman
+8. Form dan validasi (skema validasi selaras dengan Backend)
+9. Auth di sisi klien (penyimpanan sesi/token, route guard)
+10. Performa, SEO, dan aksesibilitas yang relevan
+11. Konvensi kode, linting, dan testing
+
+**`BACKEND_<project>.md`** memuat:
+1. Ringkasan stack dan arsitektur (layering, modul)
+2. Struktur folder lengkap
+3. **Skema database:** tabel, kolom, tipe, constraint, relasi, index, dan diagram ERD (Mermaid). Penamaan mengikuti glosarium.
+4. Migrasi dan seed data
+5. Implementasi kontrak API per endpoint: handler/service/repository, validasi, aturan bisnis; contoh kode untuk alur kunci
+6. Autentikasi dan otorisasi (role/permission, matriks akses per endpoint)
+7. Penanganan error dan format respons seragam
+8. Logging, monitoring, dan konfigurasi environment (daftar variabel, tanpa nilai rahasia)
+9. Background job, upload file, integrasi pihak ketiga bila ada di PRD
+10. Testing dan strategi deployment sesuai techstack
+
+### Fase 5: File pendukung
+
+**`security.md`:** aturan keamanan website yang disesuaikan dengan techstack dan fitur. Minimal mencakup:
+- autentikasi, manajemen sesi/token, kebijakan password, dan rate limiting
+- otorisasi (RBAC) dan pencegahan IDOR
+- validasi dan sanitasi input; pencegahan injeksi (SQL/NoSQL), XSS, CSRF
+- header keamanan, CORS, HTTPS, cookie flags
+- upload file (tipe, ukuran, penyimpanan aman)
+- pengelolaan secret dan environment variable
+- perlindungan data pribadi, enkripsi, dan backup
+- logging keamanan, penanganan error tanpa membocorkan detail
+- keamanan dependensi dan checklist sebelum rilis
+
+Beri ID aturan (`S-01`, ...) dan petakan tiap aturan ke endpoint/halaman yang terkena bila relevan.
+
+**`task.md`:** pelacak pekerjaan untuk project yang dikerjakan bersama. Format:
+
+```
+| ID Tugas | Fitur | Role (UI/UX/FE/BE) | Deskripsi | Status | Penanggung jawab | Catatan |
+```
+
+Status: `Belum` / `Sedang dikerjakan` / `Review` / `Selesai` / `Terblokir`. Pecah tiap fitur (F-xx) menjadi tugas per role, urut sesuai ketergantungan (UI/UX → kontrak API → FE & BE paralel → integrasi → testing). Tambahkan bagian "Riwayat perubahan" berisi tanggal dan ringkasan.
+
+**Mode pembaruan:** jika `task.md` sudah ada saat skill dipakai lagi, jangan buat ulang. Pertahankan status yang sudah ada, tambahkan tugas baru, perbarui status sesuai info dari user, dan catat di riwayat. Perlakuan yang sama berlaku untuk `security.md` yang sudah ada: tambahkan atau revisi, jangan timpa tanpa persetujuan.
+
+### Fase 6: Pengecekan konsistensi dan penutup
+
+1. Lengkapi **matriks keterlacakan**:
+
+```
+| Fitur | Halaman | Komponen | Endpoint | Tabel DB | Aturan keamanan |
+```
+
+2. Periksa dan laporkan temuan:
+   - fitur tanpa halaman, endpoint, atau tabel
+   - endpoint atau tabel yang tidak dipakai fitur mana pun
+   - perbedaan nama (entitas, field, token) antar file
+   - halaman di UI/UX yang tidak punya route di Frontend, atau sebaliknya
+   - field di form yang tidak ada di request API atau skema database
+   - endpoint yang tidak punya aturan akses di `security.md`
+3. Perbaiki temuan, atau tanyakan ke user bila perlu keputusan. Catat hasilnya di bagian "Hasil pengecekan konsistensi" pada file induk.
+4. Serahkan semua file dan ringkas apa yang dihasilkan serta apa yang masih `[PERLU KONFIRMASI]`.
+
+## Struktur output
+
+```
+<project>-design-plan/
+├── DESIGN_PLAN_<project>.md     (induk: ringkasan, Shared Contract, matriks, hasil pengecekan)
+├── UIUX_<project>.md
+├── FRONTEND_<project>.md
+├── BACKEND_<project>.md
+├── task.md
+├── security.md
+└── mockups/
+    ├── index.html               (daftar halaman + tautan)
+    ├── styles.css               (design tokens + gaya bersama)
+    └── <route-atau-nama-halaman>.html   (satu file per halaman P-xx)
+```
+
+`DESIGN_PLAN_<project>.md` berisi: ringkasan proyek, daftar file dan fungsinya, urutan kerja, Shared Contract lengkap, matriks keterlacakan, dan hasil pengecekan konsistensi.
+
+## Aturan mockup HTML
+
+Mockup adalah gambaran visual yang bisa dibuka langsung di browser tanpa server atau build.
+
+- **Statis dan mandiri:** HTML + satu `styles.css` bersama. Tanpa framework dan tanpa JavaScript, kecuali sedikit untuk interaksi dasar yang memperjelas desain (menu, tab, modal). Tanpa permintaan jaringan selain font; beri fallback font.
+- **Pakai design tokens yang sama persis** dengan `UIUX_<project>.md` lewat CSS variables di `styles.css` (`--color-primary`, dan seterusnya), sehingga Frontend bisa memindahkannya apa adanya.
+- **Satu file per halaman (P-xx)**, ditambah `index.html` sebagai daftar isi. Tautan antar halaman memakai path relatif agar alur pengguna bisa diklik.
+- **Tandai keterlacakan:** beri atribut `data-page="P-xx"` pada `<body>` dan `data-feature="F-xx"` pada blok fitur utama.
+- **Tampilkan state penting** (kosong, error, loading, sukses) sebagai bagian atau varian di halaman yang relevan, misalnya lewat tab atau bagian berlabel "State: ...".
+- **Responsif:** tampil baik di mobile dan desktop sesuai breakpoint di tokens.
+- **Aksesibilitas dasar:** HTML semantik, label form, kontras sesuai tokens, fokus terlihat.
+- **Konten realistis:** gunakan data contoh yang masuk akal sesuai domain project, bukan lorem ipsum.
+- Jika berasal dari referensi desain, mockup harus terlihat satu keluarga dengan referensi, termasuk pada halaman yang tidak ada di referensi.
+
+## Daftar periksa sebelum menyerahkan
+
+- [ ] PRD dan techstack sudah dibaca; kekurangan sudah ditanyakan
+- [ ] Referensi desain sudah ditanyakan dan keputusan dicatat
+- [ ] Setiap fitur punya ID dan tercantum di matriks keterlacakan
+- [ ] Design tokens identik di `UIUX`, `styles.css`, dan `FRONTEND`
+- [ ] Kontrak API identik di Shared Contract, `FRONTEND`, dan `BACKEND`
+- [ ] Skema database memakai istilah dari glosarium
+- [ ] Semua kode dan struktur sesuai techstack
+- [ ] `task.md` dan `security.md` dibuat atau diperbarui, bukan ditimpa
+- [ ] Bahasa file sesuai bahasa user
+- [ ] Semua `[PERLU KONFIRMASI]` dilaporkan di akhir
