@@ -16,7 +16,7 @@ Kunci konsistensi ada pada empat hal: satu sumber token (audit lalu DESIGN.md), 
 | 0 | Konsistensi Aset & Style | Catatan Indonesia, prompt English | `00-konsistensi-aset-style.md` |
 | 1 | Design Audit & Technical Breakdown | Indonesia | `01-design-audit.md` |
 | 2 | Stitch Prompt, **satu file per peran** | Catatan Indonesia, prompt English | `02-stitch-prompt-<peran>.md` |
-| 3 | DESIGN.md, **satu untuk semua peran** | English | `DESIGN.md` |
+| 3 | DESIGN.md resmi Stitch (alpha), **satu untuk semua peran** | English | `DESIGN.md` |
 | 4 | HTML statis + Tailwind, satu file per halaman | Kode English, teks UI mengikuti desain | `html/<halaman>.html` (hanya bila diminta atau dijanjikan di ringkasan) |
 | 5 | Restore point | Indonesia | `RESTORE_POINT.md` (hanya bila user atau proyek menghendaki) |
 
@@ -30,6 +30,7 @@ Bila hanya ada satu peran, hasilnya satu file `02-stitch-prompt.md`. Penjelasan 
 - Bila input tidak lengkap (tanpa warna, font, platform), jangan berhenti bertanya. Ambil asumsi yang masuk akal dan tulis di bagian Asumsi audit.
 - Bila ada **beberapa versi** (DESIGN.md v1 dan v2, prompt lama dan baru, desain admin dari proyek lain), buat tabel peran file di audit: yang terbaru dan selaras dengan plan menjadi sumber utama; yang lama hanya pembanding atau bahan perluasan. Plan teks menang untuk keputusan eksplisit (nama, konten, perilaku); gambar menang untuk gaya visual. Catat tiap pertentangan.
 - **Centang lama diabaikan** bila user berkata semua prompt dianggap belum dikerjakan; reset semua kotak menjadi `[ ]`. Bila user menyebut sebagian sudah dikerjakan, pertahankan hanya yang ia sebut. Catatan tangan user pada item lama (misalnya "belum butuh") dipertahankan sebagai penanda opsional, bukan dibuang diam-diam.
+- **DESIGN.md yang sudah ada di input**: bila sudah berformat resmi dan memuat data dari skill lain (baris `Dial:`, motif identitas, alasan per keputusan, bagian tambahan), pertahankan semuanya dan lengkapi hanya yang kosong. Bila formatnya lama (properti `size`/`weight`, array `scale`, judul bernomor), konversi ke format resmi tanpa mengubah nilai dan catat di audit. Aturan lengkap ada di `references/design-md-template.md`.
 - Cek yang bisa dihitung, jangan ditebak: jalankan `scripts/contrast.py` untuk kontras dan hari-dalam-pekan pada tanggal contoh.
 
 ### Langkah 2: Tentukan peran dan bagi layar
@@ -44,7 +45,7 @@ Semua token diputuskan **di audit**, lalu dipakai apa adanya di output lain. For
 
 Urutan: DESIGN.md, lalu file konsistensi dan Global Prompt, lalu prompt per peran, lalu HTML bila diminta.
 
-- **DESIGN.md**: `references/design-md-template.md`. Satu file, front matter YAML plus 10 bagian, nama token langsung bisa menjadi kunci `tailwind.config`.
+- **DESIGN.md**: `references/design-md-template.md`. Satu file berformat resmi Stitch (alpha): front matter YAML dengan token `colors`, `typography`, `rounded`, `spacing`, `motion`, `components`, diikuti bagian baku berurutan (Overview sampai Do's and Don'ts) dan bagian tambahan bila perlu. Nama token langsung bisa menjadi kunci `tailwind.config`.
 - **File konsistensi**: `references/consistency-guide.md`. Berisi kunci aset, urutan kerja, Global Prompt induk, Design System Board, kunci dan awalan jangkar, prompt audit konsistensi, checklist, dan tabel troubleshooting.
 - **Prompt per peran**: `references/stitch-prompt-guide.md`.
 - **HTML**: `references/html-guidelines.md`.
@@ -57,7 +58,10 @@ Tulis sumber file dengan placeholder (`{{GLOBAL}}`, `{{REMINDER}}`, `{{GUARD}}`,
 ```
 python scripts/build.py <src_dir> <out_dir>
 python scripts/check.py <out_dir>
+python scripts/lint_design.py <out_dir>/DESIGN.md
 ```
+
+`lint_design.py` memeriksa DESIGN.md terhadap spesifikasi resmi (nama properti token, satuan dimensi, tanpa array di `spacing`, rujukan token, urutan dan nama bagian, kontras pasangan komponen). Perbaiki semua ERROR sampai `OK`; bila linter resmi Stitch tersedia di lingkungan, jalankan juga.
 
 `check.py` memastikan: setiap hex di prompt ada di DESIGN.md; setiap hex DESIGN.md ada di Global Prompt; Global Prompt identik di semua file; tidak ada placeholder tersisa; semua kotak `[ ]` bila diminta direset; tidak ada prompt layar di atas 250 kata. Perbaiki sampai bersih. Cek manual tambahan:
 
@@ -85,6 +89,7 @@ Panggil `present_files` dengan `00-konsistensi-aset-style.md` atau `01-design-au
 ## Prinsip yang menjaga kualitas
 
 - **Satu sumber token.** Ubah di audit, lalu sebarkan ke semua output lewat build, bukan edit tangan per file.
+- **DESIGN.md mengikuti spesifikasi resmi Stitch.** Format yang valid membuat Stitch dan tool coding membaca token dengan benar; nama properti, satuan, dan urutan bagian dijaga oleh `lint_design.py`.
 - **Kunci aset sebelum gaya.** Font, set ikon, logo, gaya poster, avatar, QR, empty state, dan panel merek auth diputuskan dan ditulis di Global Prompt. Aset yang tidak ada di sumber diberi label asumsi.
 - **Jangan mengarang konten tersembunyi.** Tiap prompt layar berakhir dengan kalimat penjaga (`{{GUARD}}`). Buang statistik, klaim, logo mitra, testimoni, dan contoh kredensial dari desain lama. Detail infrastruktur spesifik vendor yang tidak ada di tech stack digeneralisasi atau dibuang.
 - **Hormati larangan di plan.** Fitur yang dilarang plan (misalnya "tanpa aksi massal", "tanpa pencarian") tidak boleh muncul lewat desain lama. Bila desain lama membawa fitur di luar plan, pindahkan ke Bagian B "perluasan, menunggu persetujuan", disesuaikan ke design system bersama.
