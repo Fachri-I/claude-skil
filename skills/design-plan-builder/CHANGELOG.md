@@ -2,6 +2,21 @@
 
 Versi mengikuti SemVer (MAJOR.MINOR.PATCH). Entri terbaru ada di paling atas.
 
+## [1.3.0] - 2026-11-26
+
+### Added
+- `AGENTS.md` sebagai keluaran baru (Fase 5): aturan wajib agen coding yang dibaca otomatis tiap sesi. Memuat urutan sumber kebenaran, cara kerja satu tugas per sesi, aturan UI "PORT, bukan desain ulang", aturan database terkunci, dan aturan gerak.
+- Format `task.md` baru: tabel ringkasan plus blok detail per tugas (UI, Database, Backend). Tugas UI memuat `SUMBER DESAIN` (path file HTML), metode PORT, rujukan gerak, dan checklist kesesuaian.
+- Urutan fase tugas wajib database-first: Fondasi, Database, Backend/API, UI per halaman, Integrasi, Testing dan keamanan.
+- Fase 0 menanyakan folder desain (default `docs/Stitch-design/`) dan `database.md`, lalu membuat Peta Desain yang memasangkan tiap halaman P-xx dengan satu file HTML sumber.
+- Pemeriksaan konsistensi Fase 6 dan butir daftar periksa baru: tugas UI tanpa sumber desain atau checklist, tugas DB/BE tanpa rujukan, urutan yang melanggar database-first, dan `AGENTS.md` yang hilang atau path-nya tidak cocok.
+
+### Changed
+- Peta halaman di Shared Contract kini punya kolom "File desain sumber".
+- `BACKEND_<project>.md` item 3: bila `database.md` ada, skema dirujuk dan dikunci, tidak didefinisikan ulang.
+- Tahap mockup hanya untuk halaman yang belum punya file desain sumber; halaman yang sudah punya sumber tidak didesain ulang.
+- Format `task.md` menggantikan tabel satu baris per tugas; mode pembaruan (tidak menimpa status) tetap berlaku.
+
 ## [1.2.0] - 2026-11-26
 
 ### Added

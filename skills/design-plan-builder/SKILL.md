@@ -1,6 +1,6 @@
 ---
 name: "design-plan-builder"
-description: Membuat rancangan kerja pembangunan website (UI/UX, Frontend, Backend) dalam file .md plus mockup HTML statis, dari PRD, techstack, dan file pendukung, agar fitur, tampilan, API, dan database konsisten. Gunakan skill ini setiap kali user ingin membuat rancangan kerja, design plan, blueprint, atau rancangan teknis website/web app dari PRD, ingin menyelaraskan UI/UX dengan frontend dan backend, ingin membuat task.md atau security.md, atau menyebut PRD_nama-project.md dan techstack.md, walaupun user tidak menyebut kata "skill". Also use when the user asks for a UI/UX, frontend, and backend plan for a website from a PRD. Skill ini melanjutkan hasil skill PRD Builder.
+description: Membuat rancangan kerja pembangunan website (UI/UX, Frontend, Backend) dalam file .md plus mockup HTML statis, dari PRD, techstack, dan file pendukung, agar fitur, tampilan, API, dan database konsisten. Gunakan skill ini setiap kali user ingin membuat rancangan kerja, design plan, blueprint, atau rancangan teknis website/web app dari PRD, ingin menyelaraskan UI/UX dengan frontend dan backend, ingin membuat task.md atau security.md, atau menyebut PRD_nama-project.md dan techstack.md, walaupun user tidak menyebut kata "skill". Also use when the user asks for a UI/UX, frontend, and backend plan for a website from a PRD. Skill ini melanjutkan hasil skill PRD Builder. Hasilkan juga AGENTS.md dan task.md berformat eksekusi setia desain (sumber desain per tugas, checklist kesesuaian, database-first) agar agen coding patuh pada desain.
 ---
 
 # Design Plan Builder
@@ -8,6 +8,8 @@ description: Membuat rancangan kerja pembangunan website (UI/UX, Frontend, Backe
 Skill ini mengubah PRD, techstack, dan file pendukung menjadi satu paket rancangan kerja yang konsisten dari fitur sampai tampilan, untuk tiga role: **UI/UX, Frontend, Backend**. Hasilnya berupa file `.md` dan mockup HTML statis.
 
 Konsistensi adalah tujuan utama. Semua keputusan penting (fitur, nama, warna, halaman, endpoint, tabel) ditulis **sekali** di Shared Contract, lalu dirujuk oleh ketiga role. Jangan menduplikasi atau menamai ulang hal yang sama di file lain.
+
+Tujuan kedua: **agen coding yang membangun website harus patuh pada desain dan rancangan tanpa perlu diingatkan berulang.** Karena itu paket ini selalu menyertakan `AGENTS.md` dan `task.md` yang menunjuk file desain sumber, skema database terkunci, dan checklist kesesuaian (lihat Fase 5).
 
 ## Aturan umum
 
@@ -29,12 +31,16 @@ Minta user menyerahkan file perancangan. Periksa apa yang ada:
 |---|---|---|
 | `PRD_<project>.md` | Wajib | tujuan, target user, daftar fitur, alur utama, batasan |
 | `techstack.md` | Wajib | frontend, backend, database, auth, hosting, library UI |
+| Folder desain | Wajib jika desain UI sudah ada | path folder (default `docs/Stitch-design/`) berisi HTML per halaman dan `DESIGN.md` |
+| `database.md` | Opsional | skema database dari skill database; bila ada, jadi sumber kebenaran skema |
 | File pendukung | Opsional | `user-flow.md`, skema DB awal, brand guideline, `DESIGN.md` (dari design-direction-builder), aturan bisnis, `task.md`/`security.md` yang sudah ada |
 
 Aturan:
 - Jika PRD atau techstack belum ada, hentikan dan beri tahu user. Sarankan membuatnya dengan skill PRD Builder.
 - Jika ada, baca semuanya, lalu laporkan: apa yang sudah cukup, apa yang kurang, dan apa yang belum bisa dirancang karena itu.
 - Jika `task.md` atau `security.md` sudah ada, gunakan sebagai dasar dan perbarui (lihat Fase 5), jangan menimpa.
+- Tanyakan lokasi folder desain bila belum disebut, lalu catat path-nya di Shared Contract.
+- Buat **Peta Desain**: pasangkan tiap halaman P-xx dengan satu file HTML sumber. Halaman tanpa file sumber ditandai `TANPA SUMBER: turunkan dari DESIGN.md` dan dilaporkan ke user.
 
 ### Fase 1: Shared Contract
 
@@ -42,7 +48,7 @@ Ekstrak dari input lalu susun kamus konsistensi. Simpan di bagian awal `DESIGN_P
 
 1. **Daftar fitur dengan ID** (`F-01`, `F-02`, ...): nama, deskripsi singkat, prioritas (Must/Should/Could), role pengguna yang terlibat.
 2. **Glosarium & penamaan:** nama entitas, istilah bisnis, dan konvensi penamaan (file, komponen, route, tabel, field, endpoint). Satu istilah, satu nama.
-3. **Peta halaman:** ID halaman (`P-01`, ...), nama, route, fitur yang dilayani.
+3. **Peta halaman:** tabel dengan kolom `ID | Nama | Route | Fitur (F-xx) | File desain sumber`. ID halaman (`P-01`, ...). Kolom file desain sumber diisi path relatif dari root proyek, contoh `docs/Stitch-design/login.html`.
 4. **Design tokens:** diisi setelah Fase 2, lalu dikunci.
 5. **Kontrak API:** diisi di Fase 3.
 6. **Matriks keterlacakan:** diisi bertahap, diselesaikan di Fase 6.
@@ -77,6 +83,8 @@ Isi `UIUX_<project>.md`:
 1. **Pratinjau sebagai artifact.** Pertama kali mockup selalu ditampilkan sebagai artifact di chat, bukan langsung sebagai berkas. Revisi dikerjakan pada artifact yang sama.
 2. **Berkas HTML per halaman.** Hanya setelah user menyatakan mockup disetujui, ubah menjadi berkas HTML untuk setiap halaman lengkap dengan CSS.
 
+Jika user sudah punya desain final di folder desain (misalnya hasil Stitch), tahap mockup hanya untuk halaman yang belum punya file sumber. Halaman yang sudah punya file sumber tidak didesain ulang.
+
 Setelah mockup disetujui, **kunci** tokens (termasuk token gerak) ke Shared Contract. Frontend wajib memakai nama token yang sama. Bila revisi mockup mengubah token, halaman, atau komponen, perbarui `UIUX_<project>.md` agar tetap sama dengan artifact sebelum meminta persetujuan.
 
 ### Fase 3: Kontrak API
@@ -106,7 +114,7 @@ Kerjakan setelah UI/UX dan kontrak API terkunci. Keduanya mengacu pada Shared Co
 **`BACKEND_<project>.md`** memuat:
 1. Ringkasan stack dan arsitektur (layering, modul)
 2. Struktur folder lengkap
-3. **Skema database:** tabel, kolom, tipe, constraint, relasi, index, dan diagram ERD (Mermaid). Penamaan mengikuti glosarium.
+3. **Skema database:** jika `database.md` ada, BACKEND **merujuknya dan tidak mendefinisikan ulang** (tulis "Skema: lihat `database.md`, status TERKUNCI"). Jika tidak ada, definisikan di sini: tabel, kolom, tipe, constraint, relasi, index, dan diagram ERD (Mermaid), dengan penamaan mengikuti glosarium. Setelah disetujui, skema dikunci: perubahan hanya lewat persetujuan user.
 4. Migrasi dan seed data
 5. Implementasi kontrak API per endpoint: handler/service/repository, validasi, aturan bisnis; contoh kode untuk alur kunci
 6. Autentikasi dan otorisasi (role/permission, matriks akses per endpoint)
@@ -130,15 +138,117 @@ Kerjakan setelah UI/UX dan kontrak API terkunci. Keduanya mengacu pada Shared Co
 
 Beri ID aturan (`S-01`, ...) dan petakan tiap aturan ke endpoint/halaman yang terkena bila relevan.
 
-**`task.md`:** pelacak pekerjaan untuk project yang dikerjakan bersama. Format:
+**`task.md`:** pelacak pekerjaan yang juga menjadi perintah kerja bagi agen coding. Format tabel satu baris per tugas tidak cukup karena tidak bisa memuat aturan per tugas. Pakai **tabel ringkasan + blok detail per tugas**.
+
+*Urutan fase tugas (wajib):*
+
+1. **A. Fondasi:** setup proyek, design tokens dari `DESIGN.md`, struktur folder
+2. **B. Database:** migrasi dan seed dari `database.md`
+3. **C. Backend/API:** endpoint sesuai kontrak API
+4. **D. UI per halaman:** satu tugas per halaman P-xx
+5. **E. Integrasi:** sambungkan UI ke API
+6. **F. Testing dan keamanan:** sesuai `security.md`
+
+*Bagian atas `task.md` (ringkasan):*
 
 ```
-| ID Tugas | Fitur | Role (UI/UX/FE/BE) | Deskripsi | Status | Penanggung jawab | Catatan |
+| ID | Fase | Tugas | Role | Status | Bergantung pada |
 ```
 
-Status: `Belum` / `Sedang dikerjakan` / `Review` / `Selesai` / `Terblokir`. Pecah tiap fitur (F-xx) menjadi tugas per role, urut sesuai ketergantungan (UI/UX → kontrak API → FE & BE paralel → integrasi → testing). Tambahkan bagian "Riwayat perubahan" berisi tanggal dan ringkasan.
+Status: `Belum` / `Sedang dikerjakan` / `Review` / `Selesai` / `Terblokir`.
+
+*Blok detail tugas UI (wajib persis format ini):*
+
+```
+### T-xx: [UI] Halaman <nama> (P-xx)
+- Fitur: F-xx
+- SUMBER DESAIN (wajib dibaca sebelum menulis kode): <folder-desain>/<file>.html
+- Metode: PORT, bukan desain ulang. Salin struktur HTML, class, warna, spasi,
+  font, dan urutan section dari file sumber ke komponen. Setelah itu baru
+  ganti data statis dengan data dinamis. Dilarang menambah, menghapus, atau
+  mengubah elemen visual.
+- Gerak: ikuti baris halaman ini di spesifikasi gerak (UIUX_<project>.md, bagian 9),
+  lengkap dengan fallback prefers-reduced-motion. Library hanya dari techstack.md.
+- Data/API: <endpoint dari kontrak API>
+- Checklist kesesuaian (isi sebelum status diubah ke Review):
+  - [ ] Semua section di file sumber ada, urutannya sama
+  - [ ] Warna, font, radius, dan spasi memakai token DESIGN.md (tanpa nilai hardcode baru)
+  - [ ] Tidak ada elemen tambahan yang tidak ada di sumber
+  - [ ] State penting (kosong/loading/error) mengikuti sumber atau DESIGN.md
+  - [ ] Tampil benar di mobile dan desktop seperti sumber
+- Bukti selesai: ringkasan perbedaan yang tersisa (atau "tidak ada")
+```
+
+*Blok detail tugas Database:*
+
+```
+### T-xx: [DB] <nama migrasi/tabel>
+- Sumber skema (TERKUNCI): database.md, bagian <tabel>
+- Aturan: ikuti nama tabel, kolom, tipe, dan relasi persis seperti sumber.
+  Dilarang mengubah skema. Jika butuh perubahan, BERHENTI dan tanyakan ke user.
+- Bukti selesai: migrasi berhasil dijalankan, seed terisi
+```
+
+*Blok detail tugas Backend:*
+
+```
+### T-xx: [BE] <METHOD /path>
+- Sumber kontrak: DESIGN_PLAN_<project>.md, bagian Kontrak API
+- Aturan: request, response, dan kode error persis seperti kontrak.
+  Aturan akses mengikuti security.md (S-xx).
+- Bukti selesai: endpoint diuji dengan contoh request/response dari kontrak
+```
+
+*Aturan tambahan:*
+- Satu tugas = satu halaman atau satu modul kecil, agar konteks agen tidak membengkak.
+- Tugas UI bergantung pada tugas Fondasi (tokens) dan tidak boleh mendahului tugas Database/Backend yang diperlukan datanya, **kecuali** dikerjakan dengan data statis dulu lalu dihubungkan di fase E (tulis ini di "Bergantung pada").
+- Sertakan bagian "Riwayat perubahan" berisi tanggal dan ringkasan.
 
 **Mode pembaruan:** jika `task.md` sudah ada saat skill dipakai lagi, jangan buat ulang. Pertahankan status yang sudah ada, tambahkan tugas baru, perbarui status sesuai info dari user, dan catat di riwayat. Perlakuan yang sama berlaku untuk `security.md` yang sudah ada: tambahkan atau revisi, jangan timpa tanpa persetujuan.
+
+**`AGENTS.md`:** aturan wajib untuk agen coding. Agen seperti opencode membacanya otomatis di setiap sesi, sehingga aturan tidak hilang saat konteks panjang atau model diganti. Dibuat di root proyek bersama `task.md`. Gunakan template berikut dan sesuaikan path serta nama proyek:
+
+````markdown
+# AGENTS.md: Aturan Wajib untuk Agen Coding
+
+Proyek: <nama proyek>
+
+## Sumber kebenaran (urutan prioritas)
+1. `<folder-desain>/*.html`: tampilan setiap halaman. Ini hukum, bukan inspirasi.
+2. `<folder-desain>/DESIGN.md`: design tokens (warna, font, spasi, radius, gerak).
+3. `database.md`: skema database (TERKUNCI).
+4. `DESIGN_PLAN_<project>.md`: kontrak API, peta halaman, glosarium.
+5. `task.md`: daftar tugas dan urutan kerja.
+6. `security.md`: aturan keamanan.
+
+Jika dua sumber bertentangan, ikuti urutan di atas dan laporkan pertentangannya.
+
+## Cara kerja per tugas
+1. Buka `task.md`, ambil **satu** tugas dengan status Belum yang dependensinya sudah Selesai.
+2. Ubah statusnya menjadi Sedang dikerjakan.
+3. Baca semua "Sumber" yang tertulis di tugas itu **sebelum menulis kode**.
+4. Kerjakan hanya tugas itu. Jangan menyentuh halaman/modul lain.
+5. Isi checklist tugas. Jika ada yang tidak terpenuhi, perbaiki dulu.
+6. Ubah status menjadi Review, tulis ringkasan singkat di Riwayat perubahan, lalu berhenti dan lapor.
+
+## Aturan UI (paling sering dilanggar)
+- **PORT, bukan desain ulang.** Sebelum menulis kode halaman, tulis daftar section dari file HTML sumber (urutan dan nama). Lalu salin struktur, class, dan gaya dari file itu.
+- Dilarang mengarang layout, mengganti warna, menambah section, atau "memperbaiki" desain.
+- Dilarang memakai nilai warna/font/spasi yang tidak ada di `DESIGN.md`.
+- Gerak mengikuti spesifikasi gerak di `UIUX_<project>.md`. Dilarang menambah library gerak di luar `techstack.md`, dan setiap efek wajib punya fallback `prefers-reduced-motion`.
+- Bila ada konflik antara kemudahan teknis dan kesesuaian desain, pilih kesesuaian desain, atau berhenti dan tanyakan.
+
+## Aturan Database
+- Skema mengikuti `database.md` persis. Dilarang menambah/menghapus/mengubah tabel, kolom, atau relasi sendiri.
+- Perlu perubahan skema? Berhenti, jelaskan alasannya, tunggu persetujuan user.
+
+## Aturan umum
+- Jangan menebak untuk hal yang bisa dibaca dari file. Jika informasi benar-benar tidak ada, tanyakan.
+- Jangan mengerjakan tugas di luar `task.md`.
+- Jangan menandai tugas Selesai sebelum checklist terpenuhi. Hanya user yang mengubah Review menjadi Selesai.
+````
+
+Jika proyek tidak punya `database.md`, ganti butir 3 dengan rujukan ke bagian skema di `BACKEND_<project>.md`. Jika `AGENTS.md` sudah ada di proyek, gabungkan: tambahkan bagian yang belum ada, jangan timpa.
 
 ### Fase 6: Pengecekan konsistensi dan penutup
 
@@ -157,6 +267,11 @@ Status: `Belum` / `Sedang dikerjakan` / `Review` / `Selesai` / `Terblokir`. Peca
    - endpoint yang tidak punya aturan akses di `security.md`
    - library gerak di spesifikasi gerak atau `FRONTEND_<project>.md` yang tidak tercantum di `techstack.md`
    - efek gerak tanpa fallback `prefers-reduced-motion`, atau token gerak yang namanya berbeda antar file
+   - halaman P-xx yang punya UI tetapi tugasnya tidak punya `SUMBER DESAIN`, atau path file desainnya tidak ada
+   - tugas UI tanpa checklist kesesuaian
+   - tugas DB/BE yang tidak merujuk `database.md` atau kontrak API
+   - urutan tugas yang melanggar database-first
+   - `AGENTS.md` tidak ada, atau path di dalamnya tidak cocok dengan struktur proyek
 3. Perbaiki temuan, atau tanyakan ke user bila perlu keputusan. Catat hasilnya di bagian "Hasil pengecekan konsistensi" pada file induk.
 4. Serahkan semua file dan ringkas apa yang dihasilkan serta apa yang masih `[PERLU KONFIRMASI]`.
 
@@ -168,7 +283,8 @@ Status: `Belum` / `Sedang dikerjakan` / `Review` / `Selesai` / `Terblokir`. Peca
 ├── UIUX_<project>.md
 ├── FRONTEND_<project>.md
 ├── BACKEND_<project>.md
-├── task.md
+├── AGENTS.md                    (aturan wajib agen coding; pindahkan ke root proyek saat membangun)
+├── task.md                      (ringkasan + blok detail per tugas; pindahkan ke root proyek)
 ├── security.md
 └── mockups/
     ├── index.html               (daftar halaman + tautan)
@@ -221,13 +337,16 @@ Ubah artifact yang disetujui menjadi berkas yang bisa dibuka di browser tanpa se
 - [ ] PRD dan techstack sudah dibaca; kekurangan sudah ditanyakan
 - [ ] Referensi desain sudah ditanyakan dan keputusan dicatat
 - [ ] Setiap fitur punya ID dan tercantum di matriks keterlacakan
+- [ ] Setiap halaman UI punya file desain sumber di Peta Desain (atau ditandai TANPA SUMBER dan dilaporkan)
 - [ ] Mockup ditampilkan sebagai artifact lebih dulu dan sudah disetujui user sebelum berkas HTML dibuat
 - [ ] Berkas HTML per halaman + `styles.css` identik secara visual dengan artifact yang disetujui
 - [ ] Design tokens identik di `UIUX`, `styles.css`, dan `FRONTEND`
 - [ ] Spesifikasi gerak ada di `UIUX`, library gerak tercantum di `techstack.md`, setiap efek punya fallback `prefers-reduced-motion`, dan token gerak identik di `UIUX`, `FRONTEND`, serta `DESIGN.md` bila ada
 - [ ] Kontrak API identik di Shared Contract, `FRONTEND`, dan `BACKEND`
-- [ ] Skema database memakai istilah dari glosarium
+- [ ] Skema database memakai istilah dari glosarium, dan dirujuk dari `database.md` bila ada (tidak didefinisikan ulang)
 - [ ] Semua kode dan struktur sesuai techstack
+- [ ] `task.md` memakai format baru: tiap tugas UI memuat SUMBER DESAIN, metode PORT, dan checklist kesesuaian; urutan fase Fondasi → Database → Backend → UI → Integrasi → Testing
+- [ ] `AGENTS.md` dibuat dan path di dalamnya sudah benar
 - [ ] `task.md` dan `security.md` dibuat atau diperbarui, bukan ditimpa
 - [ ] Bahasa file sesuai bahasa user
 - [ ] Semua `[PERLU KONFIRMASI]` dilaporkan di akhir
