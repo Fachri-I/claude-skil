@@ -69,9 +69,12 @@ Isi `UIUX_<project>.md`:
 7. Aksesibilitas: kontras, fokus keyboard, label, ukuran target sentuh
 8. Microcopy utama (judul, tombol, pesan error) bila relevan
 
-Setelah tokens disetujui, **kunci** tokens ke Shared Contract. Frontend wajib memakai nama token yang sama.
+**Mockup dalam dua tahap** (wajib, aturan lengkap di bagian "Aturan mockup HTML"):
 
-**Mockup HTML statis** (wajib, lihat bagian "Aturan mockup").
+1. **Pratinjau sebagai artifact.** Pertama kali mockup selalu ditampilkan sebagai artifact di chat, bukan langsung sebagai berkas. Revisi dikerjakan pada artifact yang sama.
+2. **Berkas HTML per halaman.** Hanya setelah user menyatakan mockup disetujui, ubah menjadi berkas HTML untuk setiap halaman lengkap dengan CSS.
+
+Setelah mockup disetujui, **kunci** tokens ke Shared Contract. Frontend wajib memakai nama token yang sama. Bila revisi mockup mengubah token, halaman, atau komponen, perbarui `UIUX_<project>.md` agar tetap sama dengan artifact sebelum meminta persetujuan.
 
 ### Fase 3: Kontrak API
 
@@ -171,11 +174,34 @@ Status: `Belum` / `Sedang dikerjakan` / `Review` / `Selesai` / `Terblokir`. Peca
 
 ## Aturan mockup HTML
 
-Mockup adalah gambaran visual yang bisa dibuka langsung di browser tanpa server atau build.
+Mockup adalah gambaran visual yang bisa dibuka langsung di browser tanpa server atau build. Ia dibuat dalam dua tahap yang berurutan: pratinjau artifact, lalu berkas HTML per halaman.
 
-- **Statis dan mandiri:** HTML + satu `styles.css` bersama. Tanpa framework dan tanpa JavaScript, kecuali sedikit untuk interaksi dasar yang memperjelas desain (menu, tab, modal). Tanpa permintaan jaringan selain font; beri fallback font.
-- **Pakai design tokens yang sama persis** dengan `UIUX_<project>.md` lewat CSS variables di `styles.css` (`--color-primary`, dan seterusnya), sehingga Frontend bisa memindahkannya apa adanya.
-- **Satu file per halaman (P-xx)**, ditambah `index.html` sebagai daftar isi. Tautan antar halaman memakai path relatif agar alur pengguna bisa diklik.
+### Tahap 1: Pratinjau sebagai artifact
+
+- **Selalu artifact dulu.** Jangan menulis folder `mockups/` sebelum user menyetujui pratinjau, kecuali user meminta langsung berkas.
+- **Cara menampilkan:** gunakan alat artifact bila tersedia. Jika ada jenis artifact untuk mockup atau desain, pakai itu; jika tidak, satu halaman HTML mandiri yang dipublikasikan sebagai artifact. Bila alat artifact tidak tersedia, tulis satu berkas HTML mandiri ke `/mnt/user-data/outputs/` lalu tampilkan dengan `present_files`.
+- **Satu artifact mandiri:** semua CSS di dalam `<style>` (tanpa `styles.css` terpisah), tanpa framework, tanpa gambar atau skrip dari host lain (font boleh dengan fallback). Semua halaman ada di artifact yang sama dan bisa dipindah lewat bilah navigasi kecil yang jelas bukan bagian produk (tautan `#P-01` atau tab; JavaScript secukupnya).
+- **Cakupan:** semua halaman P-xx bila jumlahnya enam atau kurang. Bila lebih, pratinjau memuat halaman kunci (maksimal enam: yang paling sering dilihat dan yang mewakili tiap pola layout), dan beri tahu halaman mana yang belum tampil serta bahwa halaman itu akan dibuat dengan pola yang sama setelah persetujuan. Tampilkan state penting (kosong, error, loading, sukses) pada halaman yang relevan.
+- **Token dan struktur** sudah identik dengan `UIUX_<project>.md`: CSS variables di `:root`, nama kelas yang konsisten untuk komponen bersama, dan atribut `data-page`/`data-feature` pada tiap halaman. Dengan begitu konversi di Tahap 2 hanya memindahkan, bukan merancang ulang.
+- **Revisi:** terapkan masukan user pada artifact yang sama (perbarui artifact yang ada, bukan membuat artifact baru), lalu sinkronkan `UIUX_<project>.md`. Setelah tiap putaran, ringkas apa yang berubah dan tanya apakah sudah disetujui.
+- **Persetujuan:** minta persetujuan eksplisit sebelum Tahap 2 ("sudah disetujui, ubah jadi HTML per halaman?"). Jawaban seperti "lanjut" atau "setuju" dihitung. Tanpa persetujuan, tetap di Tahap 1.
+
+### Tahap 2: Berkas HTML per halaman (setelah disetujui)
+
+Ubah artifact yang disetujui menjadi berkas yang bisa dibuka di browser tanpa server:
+
+- **Satu file per halaman (P-xx)** dengan CSS dari `styles.css` bersama: `<link rel="stylesheet" href="styles.css">` di setiap halaman. Pindahkan semua CSS artifact ke `styles.css` (token `:root` di bagian atas, lalu gaya bersama, lalu gaya khusus halaman dengan komentar penanda); tidak ada CSS inline selain nilai dinamis yang memang perlu.
+- **`index.html`** sebagai daftar isi, memuat nama halaman, ID P-xx, fitur terkait, dan tautan.
+- **Navigasi** antar halaman memakai tautan relatif ke berkas, bukan lagi `#P-01` atau JavaScript pengalih. Bilah navigasi artifact yang bukan bagian produk dihapus.
+- **Tampilan identik dengan artifact yang disetujui.** Jangan mendesain ulang, mengganti token, atau mengubah teks tanpa persetujuan. Halaman yang tidak ada di pratinjau dibuat dengan pola, komponen, dan kelas yang sama dengan halaman yang disetujui.
+- **Pemeriksaan sebelum menyerahkan:** setiap berkas terbuka dan semua tautan relatif menuju berkas yang ada; setiap halaman P-xx di peta halaman punya satu berkas; nilai token di `styles.css` sama dengan `UIUX_<project>.md`; tidak ada placeholder yang tersisa.
+- **Menyerahkan:** simpan di `<project>-design-plan/mockups/` lalu `present_files` dengan `index.html` di depan, diikuti `styles.css` dan semua halaman. Bila berkasnya lebih dari delapan, sertakan juga `mockups.zip`.
+
+### Aturan berlaku untuk kedua tahap
+
+- **Statis dan mandiri:** HTML + CSS. Tanpa framework dan tanpa JavaScript, kecuali sedikit untuk interaksi dasar yang memperjelas desain (menu, tab, modal). Tanpa permintaan jaringan selain font; beri fallback font.
+- **Pakai design tokens yang sama persis** dengan `UIUX_<project>.md` lewat CSS variables (`--color-primary`, dan seterusnya), di `<style>` pada artifact dan di `styles.css` pada berkas final, sehingga Frontend bisa memindahkannya apa adanya.
+- **Alur pengguna bisa diklik:** tautan antar halaman berfungsi, lewat navigasi artifact di Tahap 1 dan path relatif antar berkas di Tahap 2.
 - **Tandai keterlacakan:** beri atribut `data-page="P-xx"` pada `<body>` dan `data-feature="F-xx"` pada blok fitur utama.
 - **Tampilkan state penting** (kosong, error, loading, sukses) sebagai bagian atau varian di halaman yang relevan, misalnya lewat tab atau bagian berlabel "State: ...".
 - **Responsif:** tampil baik di mobile dan desktop sesuai breakpoint di tokens.
@@ -188,6 +214,8 @@ Mockup adalah gambaran visual yang bisa dibuka langsung di browser tanpa server 
 - [ ] PRD dan techstack sudah dibaca; kekurangan sudah ditanyakan
 - [ ] Referensi desain sudah ditanyakan dan keputusan dicatat
 - [ ] Setiap fitur punya ID dan tercantum di matriks keterlacakan
+- [ ] Mockup ditampilkan sebagai artifact lebih dulu dan sudah disetujui user sebelum berkas HTML dibuat
+- [ ] Berkas HTML per halaman + `styles.css` identik secara visual dengan artifact yang disetujui
 - [ ] Design tokens identik di `UIUX`, `styles.css`, dan `FRONTEND`
 - [ ] Kontrak API identik di Shared Contract, `FRONTEND`, dan `BACKEND`
 - [ ] Skema database memakai istilah dari glosarium
