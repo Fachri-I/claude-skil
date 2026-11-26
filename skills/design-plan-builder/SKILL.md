@@ -29,7 +29,7 @@ Minta user menyerahkan file perancangan. Periksa apa yang ada:
 |---|---|---|
 | `PRD_<project>.md` | Wajib | tujuan, target user, daftar fitur, alur utama, batasan |
 | `techstack.md` | Wajib | frontend, backend, database, auth, hosting, library UI |
-| File pendukung | Opsional | `user-flow.md`, skema DB awal, brand guideline, aturan bisnis, `task.md`/`security.md` yang sudah ada |
+| File pendukung | Opsional | `user-flow.md`, skema DB awal, brand guideline, `DESIGN.md` (dari design-direction-builder), aturan bisnis, `task.md`/`security.md` yang sudah ada |
 
 Aturan:
 - Jika PRD atau techstack belum ada, hentikan dan beri tahu user. Sarankan membuatnya dengan skill PRD Builder.
@@ -62,19 +62,22 @@ Isi `UIUX_<project>.md`:
 
 1. Sumber & adaptasi desain
 2. Prinsip desain dan nuansa
-3. **Design tokens** (warna dengan nama semantik, tipografi, skala spacing, radius, shadow, breakpoint, mode terang/gelap bila perlu), ditulis sebagai tabel **dan** blok CSS variables
+3. **Design tokens** (warna dengan nama semantik, tipografi, skala spacing, radius, shadow, token gerak berupa durasi dan easing, breakpoint, mode terang/gelap bila perlu), ditulis sebagai tabel **dan** blok CSS variables
 4. Pola komponen (button, input, card, modal, tabel, navigasi, notifikasi) dengan varian dan state: default, hover, focus, disabled, loading, error
 5. **Per halaman (P-xx):** tujuan, fitur terkait (F-xx), struktur layout (wireframe teks), komponen yang dipakai, state (kosong, loading, error, sukses), perilaku responsif
 6. Alur pengguna (user flow) antar halaman
 7. Aksesibilitas: kontras, fokus keyboard, label, ukuran target sentuh
 8. Microcopy utama (judul, tombol, pesan error) bila relevan
+9. **Spesifikasi gerak & interaksi** (format dan panduan di `references/motion.md`): tingkat gerak beserta alasannya, tabel efek per halaman (pemicu, efek, token, library, fallback `prefers-reduced-motion`), dan kebijakan smooth scroll. Library gerak hanya boleh dari `techstack.md`; bila belum tercantum, tandai `[PERLU KONFIRMASI]` dan tanyakan, jangan menambahkannya sendiri.
+
+**Gerak:** tujuannya agar website terasa hidup tanpa menjadi berat. Bila ada `DESIGN.md` dengan baris `Dial:`, ikuti nilai MOTION-nya. Bila tidak ada, tanyakan satu pertanyaan pilihan (minimal, seimbang, atau ekspresif; jelaskan tiap pilihan dalam satu kalimat), lalu catat jawaban dan alasannya di spesifikasi gerak.
 
 **Mockup dalam dua tahap** (wajib, aturan lengkap di bagian "Aturan mockup HTML"):
 
 1. **Pratinjau sebagai artifact.** Pertama kali mockup selalu ditampilkan sebagai artifact di chat, bukan langsung sebagai berkas. Revisi dikerjakan pada artifact yang sama.
 2. **Berkas HTML per halaman.** Hanya setelah user menyatakan mockup disetujui, ubah menjadi berkas HTML untuk setiap halaman lengkap dengan CSS.
 
-Setelah mockup disetujui, **kunci** tokens ke Shared Contract. Frontend wajib memakai nama token yang sama. Bila revisi mockup mengubah token, halaman, atau komponen, perbarui `UIUX_<project>.md` agar tetap sama dengan artifact sebelum meminta persetujuan.
+Setelah mockup disetujui, **kunci** tokens (termasuk token gerak) ke Shared Contract. Frontend wajib memakai nama token yang sama. Bila revisi mockup mengubah token, halaman, atau komponen, perbarui `UIUX_<project>.md` agar tetap sama dengan artifact sebelum meminta persetujuan.
 
 ### Fase 3: Kontrak API
 
@@ -97,7 +100,8 @@ Kerjakan setelah UI/UX dan kontrak API terkunci. Keduanya mengacu pada Shared Co
 8. Form dan validasi (skema validasi selaras dengan Backend)
 9. Auth di sisi klien (penyimpanan sesi/token, route guard)
 10. Performa, SEO, dan aksesibilitas yang relevan
-11. Konvensi kode, linting, dan testing
+11. Animasi dan gerak (panduan di `references/motion.md`): library dan impor modular, konstanta token gerak (nama sama dengan UI/UX), komponen atau hook pembungkus, pola cleanup, lazy loading, penanganan `prefers-reduced-motion` terpusat, dan anggaran kinerja. Bila gerak hanya memakai CSS, cukup token dan aturan reduced-motion.
+12. Konvensi kode, linting, dan testing
 
 **`BACKEND_<project>.md`** memuat:
 1. Ringkasan stack dan arsitektur (layering, modul)
@@ -151,6 +155,8 @@ Status: `Belum` / `Sedang dikerjakan` / `Review` / `Selesai` / `Terblokir`. Peca
    - halaman di UI/UX yang tidak punya route di Frontend, atau sebaliknya
    - field di form yang tidak ada di request API atau skema database
    - endpoint yang tidak punya aturan akses di `security.md`
+   - library gerak di spesifikasi gerak atau `FRONTEND_<project>.md` yang tidak tercantum di `techstack.md`
+   - efek gerak tanpa fallback `prefers-reduced-motion`, atau token gerak yang namanya berbeda antar file
 3. Perbaiki temuan, atau tanyakan ke user bila perlu keputusan. Catat hasilnya di bagian "Hasil pengecekan konsistensi" pada file induk.
 4. Serahkan semua file dan ringkas apa yang dihasilkan serta apa yang masih `[PERLU KONFIRMASI]`.
 
@@ -205,6 +211,7 @@ Ubah artifact yang disetujui menjadi berkas yang bisa dibuka di browser tanpa se
 - **Tandai keterlacakan:** beri atribut `data-page="P-xx"` pada `<body>` dan `data-feature="F-xx"` pada blok fitur utama.
 - **Tampilkan state penting** (kosong, error, loading, sukses) sebagai bagian atau varian di halaman yang relevan, misalnya lewat tab atau bagian berlabel "State: ...".
 - **Responsif:** tampil baik di mobile dan desktop sesuai breakpoint di tokens.
+- **Gerak di mockup hanya didekati dengan CSS:** satu atau dua efek kunci (hover, reveal sederhana) lewat `transition` atau `@keyframes` memakai token gerak, lengkap dengan blok `@media (prefers-reduced-motion: reduce)`. Jangan memuat library gerak di mockup; gerak final ada di spesifikasi gerak di `UIUX_<project>.md`.
 - **Aksesibilitas dasar:** HTML semantik, label form, kontras sesuai tokens, fokus terlihat.
 - **Konten realistis:** gunakan data contoh yang masuk akal sesuai domain project, bukan lorem ipsum.
 - Jika berasal dari referensi desain, mockup harus terlihat satu keluarga dengan referensi, termasuk pada halaman yang tidak ada di referensi.
@@ -217,9 +224,16 @@ Ubah artifact yang disetujui menjadi berkas yang bisa dibuka di browser tanpa se
 - [ ] Mockup ditampilkan sebagai artifact lebih dulu dan sudah disetujui user sebelum berkas HTML dibuat
 - [ ] Berkas HTML per halaman + `styles.css` identik secara visual dengan artifact yang disetujui
 - [ ] Design tokens identik di `UIUX`, `styles.css`, dan `FRONTEND`
+- [ ] Spesifikasi gerak ada di `UIUX`, library gerak tercantum di `techstack.md`, setiap efek punya fallback `prefers-reduced-motion`, dan token gerak identik di `UIUX`, `FRONTEND`, serta `DESIGN.md` bila ada
 - [ ] Kontrak API identik di Shared Contract, `FRONTEND`, dan `BACKEND`
 - [ ] Skema database memakai istilah dari glosarium
 - [ ] Semua kode dan struktur sesuai techstack
 - [ ] `task.md` dan `security.md` dibuat atau diperbarui, bukan ditimpa
 - [ ] Bahasa file sesuai bahasa user
 - [ ] Semua `[PERLU KONFIRMASI]` dilaporkan di akhir
+
+## Referensi
+
+| File | Dibaca saat |
+|---|---|
+| `references/motion.md` | Fase 2 (menyusun spesifikasi gerak) dan Fase 4 (bagian Animasi dan gerak di `FRONTEND_<project>.md`) |

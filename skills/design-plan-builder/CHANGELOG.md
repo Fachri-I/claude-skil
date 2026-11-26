@@ -2,6 +2,20 @@
 
 Versi mengikuti SemVer (MAJOR.MINOR.PATCH). Entri terbaru ada di paling atas.
 
+## [1.2.0] - 2026-11-26
+
+### Added
+- Spesifikasi gerak dan interaksi di `UIUX_<project>.md` (item 9): tingkat gerak dan alasannya, token gerak, tabel efek per halaman (pemicu, efek, token, library, fallback `prefers-reduced-motion`), dan kebijakan smooth scroll.
+- Bagian "Animasi dan gerak" di `FRONTEND_<project>.md` (item 11): library terpilih, impor modular, konstanta token gerak, pembungkus, pembersihan, lazy loading, reduced-motion terpusat, dan anggaran kinerja.
+- Referensi baru `references/motion.md`: tingkat gerak 1 sampai 3, pemilihan CSS, Motion, GSAP, dan Lenis, aturan kinerja dan aksesibilitas, serta format spesifikasi.
+- Pertanyaan tingkat gerak bila tidak ada `DESIGN.md`; `DESIGN.md` dari design-direction-builder dibaca sebagai input opsional di Fase 0.
+- Pemeriksaan konsistensi Fase 6 dan satu butir daftar periksa: library gerak harus tercantum di `techstack.md`, setiap efek punya fallback reduced-motion, token gerak identik antar file.
+- Aturan mockup: gerak hanya didekati dengan CSS, tanpa memuat library gerak.
+
+### Changed
+- Design tokens di UI/UX kini mencakup token gerak (durasi dan easing) dan ikut dikunci ke Shared Contract.
+- Item "Konvensi kode, linting, dan testing" di `FRONTEND_<project>.md` bergeser dari nomor 11 ke 12.
+
 ## [1.1.0] - 2026-11-26
 
 ### Added
